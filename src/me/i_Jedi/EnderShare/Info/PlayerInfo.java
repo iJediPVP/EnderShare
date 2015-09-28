@@ -1,17 +1,12 @@
 package me.i_Jedi.EnderShare.Info;
 
-import org.apache.commons.lang.ObjectUtils;
-import org.bukkit.Bukkit;
-import org.bukkit.OfflinePlayer;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
-import org.bukkit.entity.HumanEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.UUID;
 
 public class PlayerInfo {
     //Variables

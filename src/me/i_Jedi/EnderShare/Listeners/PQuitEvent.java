@@ -2,7 +2,6 @@ package me.i_Jedi.EnderShare.Listeners;
 
 import me.i_Jedi.EnderShare.Commands.EShareCom;
 import me.i_Jedi.EnderShare.Info.PlayerInfo;
-import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
