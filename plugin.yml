@@ -5,6 +5,26 @@ main: me.i_Jedi.EnderShare.Main
 version: 1.0.0
 commands:
    ESHARE:
-   TEST:
-   TEST2:
-   RESET:
+      description: Display EnderShare commands.
+      usage: /eshare
+
+permissions:
+   enderShare.*:
+      description: Give access to all of the EnderShare commands.
+      children:
+         enderShare.eShare: true
+         enderShare.eShare.create: true
+         enderShare.eShare.accept: true
+         enderShare.eShare.disband: true
+   enderShare.eShare:
+      description: Give access to the /eshare command.
+      default: false
+   enderShare.eShare.create:
+      description: Give access to the /eshare create <player> command.
+      default: false
+   enderShare.eShare.accept:
+      description: Give access to the /eshare accept <player> command.
+      default: false
+   enderShare.eShare.disband:
+      description: Give access to the /eshare disband command.
+      default: false

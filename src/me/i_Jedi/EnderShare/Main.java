@@ -1,6 +1,5 @@
 /*TODO LIST
-Do disband functionality
-Add custom help message to EShareCom
+
 * */
 
 package me.i_Jedi.EnderShare;
@@ -8,13 +7,8 @@ package me.i_Jedi.EnderShare;
 import me.i_Jedi.EnderShare.Commands.EShareCom;
 import me.i_Jedi.EnderShare.Info.PlayerInfo;
 import me.i_Jedi.EnderShare.Info.ShareInfo;
-import me.i_Jedi.EnderShare.Listeners.InvClickEvent;
-import me.i_Jedi.EnderShare.Listeners.InvCloseEvent;
-import me.i_Jedi.EnderShare.Listeners.PInteractEvent;
-import me.i_Jedi.EnderShare.Listeners.PJoinEvent;
+import me.i_Jedi.EnderShare.Listeners.*;
 import org.bukkit.Bukkit;
-import org.bukkit.command.Command;
-import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -35,6 +29,7 @@ public class Main extends JavaPlugin{
         new InvCloseEvent(this);
         new PInteractEvent(this);
         new PJoinEvent(this);
+        new PQuitEvent(this);
 
         //Close all open ender share chests (prevent duplication)
         for(Player p : Bukkit.getOnlinePlayers()){
@@ -60,20 +55,5 @@ public class Main extends JavaPlugin{
         //Log
         getLogger().info("EnderShare has been disabled!");
     }
-
-    //Test commands
-    public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args){
-        Player player = (Player) sender;
-        String command = cmd.getName().toUpperCase();
-        PlayerInfo pInfo = new PlayerInfo(player, this);
-        if(command.equals("TEST")){
-            String uuid = pInfo.getShareCreator();
-            player.openInventory(shareInvHM.get(uuid));
-        }else if(command.equals("TEST2")){
-
-        }
-        return true;
-    }
-
 
 }

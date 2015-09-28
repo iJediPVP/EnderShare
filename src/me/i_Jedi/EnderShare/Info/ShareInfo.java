@@ -59,6 +59,10 @@ public class ShareInfo {
             slot++;
         }
 
+        //Clear both player's enderchest
+        player.getEnderChest().clear();
+        cPlayer.getEnderChest().clear();
+
         //Save
         saveFile();
         Main.shareInvHM.put(cUUID, getSharedInv());
