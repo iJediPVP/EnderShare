@@ -8,6 +8,7 @@ import org.bukkit.Sound;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
+import org.bukkit.event.block.Action;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.plugin.java.JavaPlugin;
 
@@ -26,24 +27,30 @@ public class PInteractEvent implements Listener {
     @EventHandler
     public void pInteract(PlayerInteractEvent event){
         //Check for enderchest
-        if(event.getClickedBlock().getType().equals(Material.ENDER_CHEST)){
-            //Get player and check if they have a share
-            Player player = event.getPlayer();
-            PlayerInfo pInfo = new PlayerInfo(player, plugin);
-            if(pInfo.getHasShare()){
-                //Open the shared inventory for this player
-                String cUUID = pInfo.getShareCreator();
-                if(Main.shareInvHM.containsKey(cUUID)){
-                    player.openInventory(Main.shareInvHM.get(cUUID));
-                }else{
-                    ShareInfo sInfo = new ShareInfo(plugin, player);
-                    Main.shareInvHM.put(cUUID, sInfo.getSharedInv());
-                    player.openInventory(Main.shareInvHM.get(cUUID));
+        try{
+            if(event.getClickedBlock().getType().equals(Material.ENDER_CHEST)){
+                //Check action
+                if(event.getAction().equals(Action.RIGHT_CLICK_BLOCK)){
+                    //Get player and check if they have a share
+                    Player player = event.getPlayer();
+                    PlayerInfo pInfo = new PlayerInfo(player, plugin);
+                    if(pInfo.getHasShare()){
+                        //Open the shared inventory for this player
+                        String cUUID = pInfo.getShareCreator();
+                        if(Main.shareInvHM.containsKey(cUUID)){
+                            player.openInventory(Main.shareInvHM.get(cUUID));
+                        }else{
+                            ShareInfo sInfo = new ShareInfo(plugin, player);
+                            Main.shareInvHM.put(cUUID, sInfo.getSharedInv());
+                            player.openInventory(Main.shareInvHM.get(cUUID));
+                        }
+                        player.playSound(player.getLocation(), Sound.CHEST_OPEN, 7, 1);
+                        event.setCancelled(true);
+                    }//Else do nothing special
                 }
-                player.playSound(player.getLocation(), Sound.CHEST_OPEN, 7, 1);
-                event.setCancelled(true);
-            }//Else do nothing special
-        }
+            }
+        }catch(NullPointerException npe){}//Do nothing with this. Player interacted with air block.
+
 
     }
 }
