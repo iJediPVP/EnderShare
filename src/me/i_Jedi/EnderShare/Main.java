@@ -5,15 +5,20 @@
 package me.i_Jedi.EnderShare;
 
 import me.i_Jedi.EnderShare.Commands.EShareCom;
+import me.i_Jedi.EnderShare.Commands.EShareTabComplete;
 import me.i_Jedi.EnderShare.Info.PlayerInfo;
 import me.i_Jedi.EnderShare.Info.ShareInfo;
 import me.i_Jedi.EnderShare.Listeners.*;
 import org.bukkit.Bukkit;
+import org.bukkit.command.Command;
+import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.plugin.java.JavaPlugin;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 
 public class Main extends JavaPlugin{
 
@@ -23,7 +28,7 @@ public class Main extends JavaPlugin{
     public void onEnable(){
         //Register commands
         this.getCommand("ESHARE").setExecutor(new EShareCom(this));
-
+        this.getCommand("ESHARE").setTabCompleter(new EShareTabComplete());
         //Register events
         new InvClickEvent(this);
         new InvCloseEvent(this);
@@ -55,5 +60,7 @@ public class Main extends JavaPlugin{
         //Log
         getLogger().info("EnderShare has been disabled!");
     }
+
+
 
 }

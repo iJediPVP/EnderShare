@@ -2,7 +2,7 @@ name: EnderShare
 author: i_Jedi
 website: https://www.twitter.com/iJediPVP
 main: me.i_Jedi.EnderShare.Main
-version: 1.0.0
+version: 1.0.1
 commands:
    ESHARE:
       description: Display EnderShare commands.
