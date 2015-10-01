@@ -26,7 +26,6 @@ public class DisbandTimer extends BukkitRunnable{
         if(bool){
             player.sendMessage(ChatColor.GREEN + "" + ChatColor.BOLD + "[EnderShare] " + ChatColor.GOLD + "Your disband request to " + sharePlayer.getPlayerListName() + ChatColor.GOLD + " has expired.");
             sharePlayer.sendMessage(ChatColor.GREEN + "" + ChatColor.BOLD + "[EnderShare] " + ChatColor.GOLD + "The disband request from " + player.getPlayerListName() + " has expired.");
-            PlayerInfo pInfo = new PlayerInfo(player, plugin);
             EShareCom.disbandCDList.remove(player);
             this.cancel();
         }else{
