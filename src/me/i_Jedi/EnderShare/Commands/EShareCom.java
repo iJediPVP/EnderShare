@@ -9,7 +9,8 @@ package me.i_Jedi.EnderShare.Commands;
 import me.i_Jedi.EnderShare.Info.PlayerInfo;
 import me.i_Jedi.EnderShare.Info.ShareInfo;
 import me.i_Jedi.EnderShare.Main;
-import me.i_Jedi.EnderShare.Timer;
+import me.i_Jedi.EnderShare.Timers.DisbandTimer;
+import me.i_Jedi.EnderShare.Timers.ShareTimer;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
@@ -18,6 +19,7 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.plugin.java.JavaPlugin;
+import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.scheduler.BukkitTask;
 
 import java.util.ArrayList;
@@ -28,7 +30,8 @@ import java.util.UUID;
 public class EShareCom implements CommandExecutor {
     //Variables
     private JavaPlugin plugin;
-    public static HashMap<Player, Integer> cdList = new HashMap<>();
+    public static HashMap<Player, Integer> shareCDList = new HashMap<>();
+    public static HashMap<Player, Integer> disbandCDList = new HashMap<>();
 
     //Constructor
     public EShareCom(JavaPlugin jp){
@@ -83,23 +86,48 @@ public class EShareCom implements CommandExecutor {
                                         sharePartner.sendMessage(ChatColor.GREEN + "" + ChatColor.BOLD + "[EnderShare] " + player.getPlayerListName() + ChatColor.GOLD + " wants to disband your Ender Share, but your shared chest must be empty before you can disband.");
                                         return true;
                                     }else{
-                                        //Disband the share
-                                        //Remove from Main hashmap
-                                        Main.shareInvHM.remove(pInfo.getShareCreator());
 
-                                        //Update player file
-                                        pInfo.setHasShare(false);
-                                        pInfo.setShareCreator(null);
-                                        pInfo.setSharePartner(null);
-                                        //Update sharePartner file
-                                        pInfo = new PlayerInfo(sharePartner, plugin);
-                                        pInfo.setHasShare(false);
-                                        pInfo.setShareCreator(null);
-                                        pInfo.setSharePartner(null);
+                                        //Check if their share partner has requested to disband.
+                                        if(disbandCDList.containsKey(sharePartner)){ //Parter requested share
+                                            //Disband the share
+                                            //Remove from Main hashmap
+                                            Main.shareInvHM.remove(pInfo.getShareCreator());
 
-                                        //Alert players
-                                        player.sendMessage(ChatColor.GREEN + "" + ChatColor.BOLD + "[EnderShare] " + ChatColor.GOLD + "Your Ender Share with " + sharePartner.getPlayerListName() + ChatColor.GOLD + " has been disbanded!");
-                                        sharePartner.sendMessage(ChatColor.GREEN + "" + ChatColor.BOLD + "[EnderShare] " + ChatColor.GOLD + "Your Ender Share with " + player.getPlayerListName() + ChatColor.GOLD + " has been disbanded!");
+                                            //Update player file
+                                            pInfo.setHasShare(false);
+                                            pInfo.setShareCreator(null);
+                                            pInfo.setSharePartner(null);
+                                            //Update sharePartner file
+                                            pInfo = new PlayerInfo(sharePartner, plugin);
+                                            pInfo.setHasShare(false);
+                                            pInfo.setShareCreator(null);
+                                            pInfo.setSharePartner(null);
+                                            //Alert players
+                                            player.sendMessage(ChatColor.GREEN + "" + ChatColor.BOLD + "[EnderShare] " + ChatColor.GOLD + "Your Ender Share with " + sharePartner.getPlayerListName() + ChatColor.GOLD + " has been disbanded!");
+                                            sharePartner.sendMessage(ChatColor.GREEN + "" + ChatColor.BOLD + "[EnderShare] " + ChatColor.GOLD + "Your Ender Share with " + player.getPlayerListName() + ChatColor.GOLD + " has been disbanded!");
+                                            Bukkit.getScheduler().cancelTask(disbandCDList.get(sharePartner));
+                                            disbandCDList.remove(sharePartner);
+
+                                        }else{ //Request a disband
+                                            if(disbandCDList.containsKey(player)){ //Already requested
+                                                player.sendMessage(ChatColor.GREEN + "" + ChatColor.BOLD + "[EnderShare] " + ChatColor.GOLD + "You have already requested to disband your share with " + sharePartner.getPlayerListName() + ChatColor.GOLD + ".");
+                                                return true;
+                                            }else{ //No request active
+                                                //Start 30 second cooldown
+                                                BukkitTask task = new DisbandTimer(plugin, player, sharePartner).runTaskTimer(plugin, 0L, 30 * 20L);
+                                                disbandCDList.put(player, task.getTaskId());
+
+                                                //Alert players
+                                                sharePartner.sendMessage(ChatColor.GREEN + "" + ChatColor.BOLD + "[EnderShare] " + player.getPlayerListName() + ChatColor.GOLD +
+                                                        " has requested to disband your Ender Share. Use " + ChatColor.GREEN + "" + ChatColor.BOLD + "/eshare disband" + ChatColor.GOLD +
+                                                        " to accept. This request will expire in 30 seconds.");
+                                                player.sendMessage(ChatColor.GREEN + "" + ChatColor.BOLD + "[EnderShare] " + ChatColor.GOLD + "Disband request sent to " + sharePartner.getPlayerListName() + ChatColor.GOLD + ". They have 30 seconds to accept.");
+                                            }
+
+
+                                        }
+
+
                                     }
 
                                     //Else no share.
@@ -145,15 +173,15 @@ public class EShareCom implements CommandExecutor {
                                 PlayerInfo pInfo = new PlayerInfo(player, plugin);
                                 if(!pInfo.getHasShare()){
                                     //Check if the player already has an invite out
-                                    if(cdList.containsKey(player)){
+                                    if(shareCDList.containsKey(player)){
                                         player.sendMessage(ChatColor.GREEN + "" + ChatColor.BOLD + "[EnderShare] " + ChatColor.GOLD + "You already have a share request sent. Please wait till it expires before sending another one!");
                                         return true;
                                     }
 
                                     //Start 30 second cooldown
-                                    BukkitTask task = new Timer(plugin, player, sharePartner).runTaskTimer(plugin, 0L, 30 * 20L);
-                                    cdList.remove(player);
-                                    cdList.put(player, task.getTaskId());
+                                    BukkitTask task = new ShareTimer(plugin, player, sharePartner).runTaskTimer(plugin, 0L, 30 * 20L);
+                                    shareCDList.remove(player);
+                                    shareCDList.put(player, task.getTaskId());
                                     //Alert the other player
                                     sharePartner.sendMessage(ChatColor.GREEN + "" + ChatColor.BOLD + "[EnderShare] " + player.getPlayerListName() + ChatColor.GOLD +
                                             " has asked to share Ender Chests with you! You have 30 seconds to accept by using " + ChatColor.RED + "" + ChatColor.BOLD +
@@ -184,10 +212,10 @@ public class EShareCom implements CommandExecutor {
                                         //Make sure share partner has sent a request to this person
                                         if(player.getUniqueId().toString().equals(spInfo.getReqTo())) {
                                             spInfo.setReqTo(null);
-                                            if (cdList.containsKey(sharePartner)) {
+                                            if (shareCDList.containsKey(sharePartner)) {
                                                 //Cancel cooldown
-                                                Bukkit.getScheduler().cancelTask(cdList.get(sharePartner));
-                                                cdList.remove(sharePartner);
+                                                Bukkit.getScheduler().cancelTask(shareCDList.get(sharePartner));
+                                                shareCDList.remove(sharePartner);
                                                 spInfo.setReqTo(null);
                                             }
 

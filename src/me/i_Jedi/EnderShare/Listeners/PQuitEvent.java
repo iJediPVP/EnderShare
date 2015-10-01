@@ -27,12 +27,15 @@ public class PQuitEvent implements Listener {
         PlayerInfo pInfo = new PlayerInfo(player, plugin); //npe
         try{
             if(!pInfo.getReqTo().equals("")){
-                if(EShareCom.cdList.containsKey(player)){
-                    plugin.getServer().getScheduler().cancelTask(EShareCom.cdList.get(player));
-                    EShareCom.cdList.remove(player);
+                if(EShareCom.shareCDList.containsKey(player)){
+                    plugin.getServer().getScheduler().cancelTask(EShareCom.shareCDList.get(player));
+                    EShareCom.shareCDList.remove(player);
                     pInfo.setReqTo(null);
-                    //Check if the other player is online
                 }
+            }
+            if(EShareCom.disbandCDList.containsKey(player)){
+                plugin.getServer().getScheduler().cancelTask(EShareCom.disbandCDList.get(player));
+                EShareCom.disbandCDList.remove(player);
             }
         }catch(NullPointerException npe){
             return;
