@@ -10,15 +10,11 @@ import me.i_Jedi.EnderShare.Info.PlayerInfo;
 import me.i_Jedi.EnderShare.Info.ShareInfo;
 import me.i_Jedi.EnderShare.Listeners.*;
 import org.bukkit.Bukkit;
-import org.bukkit.command.Command;
-import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.plugin.java.JavaPlugin;
 
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 
 public class Main extends JavaPlugin{
 

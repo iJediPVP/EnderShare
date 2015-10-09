@@ -2,7 +2,7 @@ name: EnderShare
 author: i_Jedi
 website: https://www.twitter.com/iJediPVP
 main: me.i_Jedi.EnderShare.Main
-version: 1.0.1
+version: 1.0.2
 commands:
    ESHARE:
       description: Display EnderShare commands.
@@ -18,13 +18,9 @@ permissions:
          enderShare.eShare.disband: true
    enderShare.eShare:
       description: Give access to the /eshare command.
-      default: false
    enderShare.eShare.create:
       description: Give access to the /eshare create <player> command.
-      default: false
    enderShare.eShare.accept:
       description: Give access to the /eshare accept <player> command.
-      default: false
    enderShare.eShare.disband:
       description: Give access to the /eshare disband command.
-      default: false
